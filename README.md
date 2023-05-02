@@ -5,7 +5,7 @@ While it's easy to send test messages like `echo asdf | mail you@gmail.com` or v
 - Generates valid messages
 - Messages does not looks spammy or very suspicious
 - Easy to use and repeat test
-- 
+- Ability to customize messages
 
 ## Installation
 ~~~
