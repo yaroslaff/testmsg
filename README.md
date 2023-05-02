@@ -6,6 +6,7 @@ While it's easy to send test messages like `echo asdf | mail you@gmail.com` or v
 - Messages does not looks spammy or very suspicious
 - Easy to use and repeat test
 - Ability to customize messages
+- Work well with msmtp or other full-featured SMTP client (e.g. which can send over secure SMTP connection with authentication)
 
 ## Installation
 ~~~
