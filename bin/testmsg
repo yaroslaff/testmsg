@@ -1,0 +1,85 @@
+#!/usr/bin/env python3
+import smtplib
+import argparse
+import datetime
+import sys
+from email.message import EmailMessage
+
+lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, " \
+    "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n" \
+    "Ut enim ad minim veniam," \
+    "quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\n" \
+    "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.\n" \
+    "Excepteur sint occaecat cupidatat non proident, " \
+    "sunt in culpa qui officia deserunt mollit anim id est laborum.\n"
+
+version='0.0.1'
+
+def get_args():
+    parser = argparse.ArgumentParser(description='Generate/Send valid RFC822 email messages for testing')
+    parser.add_argument('-f', '--from', dest='_from', default='from@example.com', metavar='EMAIL')
+    parser.add_argument('-t', '--to', default='to@example.net', metavar='EMAIL')
+    parser.add_argument('-s', '--subject', metavar='Subject', default='Sent with github.com/yaroslaff/testmsg')
+    parser.add_argument('-a', '--add', nargs=2, action='append', dest='headers', metavar=('HEADER', 'VALUE'), help='add header')
+
+
+    g = parser.add_argument_group('Message body')
+    g.add_argument('--text')
+    g.add_argument('--lorem', default=False, action='store_true', help='Use lorem ipsum...')
+    g.add_argument('--file', help='read message body from file (or "-" to read from stdin)')
+    g.add_argument('--time', default=False, action='store_true', help='add timestamp to text')
+
+
+    g = parser.add_argument_group('Sending (optional)')
+    g.add_argument('--send', metavar='HOST')
+    g.add_argument('-v', '--verbose', default=False, action='store_true', help='Verbose SMTP')
+
+
+    return parser.parse_args()
+
+def main():
+
+    args = get_args()
+    text = ''
+
+    # generate text
+    if args.text:
+        text = args.text
+    elif args.lorem:
+        text = lorem
+    elif args.file:
+        if args.file == '-':
+            for line in sys.stdin:
+                text += line;
+        else:
+            with open(args.file) as fh:
+                text = fh.read()
+
+    if args.time:
+        text = datetime.datetime.now().strftime('%D %H:%M:%S') + '\n' + text
+
+    msg = EmailMessage()
+    msg.set_content(text)
+
+    if args.headers:
+        for h in args.headers:
+            msg.add_header(h[0], h[1])
+
+    # me == the sender's email address
+    # you == the recipient's email address
+    msg['Subject'] = args.subject
+    msg['From'] = args._from or None
+    msg['To'] = args.to
+
+    # Send the message via our own SMTP server.
+    if args.send:
+        smtp = smtplib.SMTP('localhost')
+        if args.verbose:
+            smtp.set_debuglevel(True)
+        smtp.send_message(msg)
+        smtp.quit()
+    else:
+        print(msg)
+
+if __name__ == '__main__':
+    main()
