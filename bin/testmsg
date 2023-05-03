@@ -16,7 +16,7 @@ lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, " \
 version='0.0.3'
 
 def get_args():
-    parser = argparse.ArgumentParser(description='Generate/Send valid RFC822 email messages for testing')
+    parser = argparse.ArgumentParser(description=f'Generate/Send valid RFC822 email messages for testing {version}')
     parser.add_argument('-f', '--from', dest='_from', default='from@example.com', metavar='EMAIL')
     parser.add_argument('-t', '--to', default='to@example.net', metavar='EMAIL')
     parser.add_argument('-s', '--subject', metavar='Subject', default='Sent with github.com/yaroslaff/testmsg')
