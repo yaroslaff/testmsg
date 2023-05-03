@@ -13,7 +13,7 @@ lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, " \
     "Excepteur sint occaecat cupidatat non proident, " \
     "sunt in culpa qui officia deserunt mollit anim id est laborum.\n"
 
-version='0.0.1'
+version='0.0.2'
 
 def get_args():
     parser = argparse.ArgumentParser(description='Generate/Send valid RFC822 email messages for testing')
@@ -73,7 +73,7 @@ def main():
 
     # Send the message via our own SMTP server.
     if args.send:
-        smtp = smtplib.SMTP('localhost')
+        smtp = smtplib.SMTP(args.send)
         if args.verbose:
             smtp.set_debuglevel(True)
         smtp.send_message(msg)
