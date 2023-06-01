@@ -34,14 +34,19 @@ erunt mollit anim id est laborum.
 ~~~
 
 ## Options
+
+### Sending  message
 To actually send message via SMTP server add `--send localhost` or (if you need really powerful SMTP client features) pipe to msmtp:
 ~~~
 testmsg --lorem --to you@gmail.com --from you@example.net | msmtp --host mail.example.net -v --tls=on --tls-starttls=on --auth=on --user=you@example.com --passwordeval "echo YourPass" -f you@example.net you@gmail.com
 ~~~ 
 
+### Customize message
 Use `--from`, `--to` and `--subject` to override basic properties of message, use `--add HEADER VALUE` to add custom header(s).
 
-Default message text is empty, use `--text "blah blah blah"` or `--lorem` or `--file PATH` or `--file -` .(to read from stdin). Add `--time` to add current time as an prefix to text.
+Default message text is empty, use `--text "blah blah blah"` or `--lorem` or `--msg PATH` or `--msg -` .(to read from stdin). Add `--time` to add current time as an prefix to text.
 
+### Add attachments
+Use `--attachment` (or `--att`) to add attachments: `--att FILE1 FILE2 ...`
 
 

@@ -3,6 +3,7 @@ import smtplib
 import argparse
 import datetime
 import sys
+import mimetypes
 from email.message import EmailMessage
 
 lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, " \
@@ -13,7 +14,20 @@ lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, " \
     "Excepteur sint occaecat cupidatat non proident, " \
     "sunt in culpa qui officia deserunt mollit anim id est laborum.\n"
 
-version='0.0.5'
+version='0.0.6'
+
+
+def attach(msg: EmailMessage, path: str):
+
+    ctype, _ = mimetypes.guess_type(path)
+    maintype, subtype = ctype.split('/', 1)
+
+    with open(path, 'rb') as fp:
+        msg.add_attachment(fp.read(),
+                            maintype=maintype,
+                            subtype=subtype,
+                            filename=path)
+
 
 def get_args():
     parser = argparse.ArgumentParser(description=f'Generate/Send valid RFC822 email messages for testing {version}')
@@ -26,9 +40,10 @@ def get_args():
     g = parser.add_argument_group('Message body')
     g.add_argument('--text')
     g.add_argument('--lorem', default=False, action='store_true', help='Use lorem ipsum...')
-    g.add_argument('--file', help='read message body from file (or "-" to read from stdin)')
+    g.add_argument('--msg', metavar='FILE', help='read message body from file (or "-" to read from stdin)')
     g.add_argument('--time', default=False, action='store_true', help='add timestamp to text')
 
+    g.add_argument('--attach', nargs='+', metavar='FILE', help='add attachment')
 
     g = parser.add_argument_group('Sending (optional)')
     g.add_argument('--send', metavar='HOST')
@@ -40,6 +55,7 @@ def get_args():
 def main():
 
     args = get_args()
+
     text = ''
 
     # generate text
@@ -47,12 +63,12 @@ def main():
         text = args.text
     elif args.lorem:
         text = lorem
-    elif args.file:
-        if args.file == '-':
+    elif args.msg:
+        if args.msg == '-':
             for line in sys.stdin:
                 text += line;
         else:
-            with open(args.file) as fh:
+            with open(args.msg) as fh:
                 text = fh.read()
 
     if args.time:
@@ -64,6 +80,10 @@ def main():
     if args.headers:
         for h in args.headers:
             msg.add_header(h[0], h[1])
+
+    if args.attach:
+        for att_file in args.attach:
+            attach(msg, att_file)
 
     # me == the sender's email address
     # you == the recipient's email address
