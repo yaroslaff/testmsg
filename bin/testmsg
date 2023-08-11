@@ -5,6 +5,7 @@ import datetime
 import sys
 import mimetypes
 from email.message import EmailMessage
+import email.utils
 
 lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, " \
     "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n" \
@@ -14,7 +15,7 @@ lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, " \
     "Excepteur sint occaecat cupidatat non proident, " \
     "sunt in culpa qui officia deserunt mollit anim id est laborum.\n"
 
-version='0.0.6'
+version='0.0.7'
 
 
 def attach(msg: EmailMessage, path: str):
@@ -90,6 +91,8 @@ def main():
     msg['Subject'] = args.subject
     msg['From'] = args._from or None
     msg['To'] = args.to
+    msg['Date'] = email.utils.formatdate(localtime=True)
+    msg['Message-Id'] = email.utils.make_msgid()
 
     # Send the message via our own SMTP server.
     if args.send:
