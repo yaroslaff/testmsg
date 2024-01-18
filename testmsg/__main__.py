@@ -16,7 +16,7 @@ lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, " \
     "Excepteur sint occaecat cupidatat non proident, " \
     "sunt in culpa qui officia deserunt mollit anim id est laborum.\n"
 
-__version__='0.0.8'
+__version__='0.0.9'
 
 
 def attach(msg: EmailMessage, path: str):
@@ -32,7 +32,7 @@ def attach(msg: EmailMessage, path: str):
 
 
 def get_args():
-    parser = argparse.ArgumentParser(description=f'Generate/Send valid RFC822 email messages for testing {version}')
+    parser = argparse.ArgumentParser(description=f'Generate/Send valid RFC822 email messages for testing {__version__}')
     parser.add_argument('-f', '--from', dest='_from', default='from@example.com', metavar='EMAIL')
     parser.add_argument('-t', '--to', default='to@example.net', metavar='EMAIL')
     parser.add_argument('-s', '--subject', metavar='Subject', default='Sent with github.com/yaroslaff/testmsg')
