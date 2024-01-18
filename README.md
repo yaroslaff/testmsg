@@ -67,7 +67,7 @@ openssl rsa -in example.com.pem -out example.com.pub -pubout
 Make DKIM DNS record with as `SELECTOR`._domainkey.example.com and verify it (here I decide to use selector `mail`):
 ~~~shell
 $ host -t txt mail._domainkey.example.com
-mail._domainkey.example.com.net descriptive text "v=DKIM1; h=sha256; k=rsa; s=email; p=MII...."
+mail._domainkey.example.com.net descriptive text "v=DKIM1; h=sha256; k=rsa; p=MII...."
 ~~~
 
 send DKIM signed message to gmail or mail-tester.com! Use `--selector` and `--privkey` arguments.
