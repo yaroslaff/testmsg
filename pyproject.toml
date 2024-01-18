@@ -1,0 +1,39 @@
+[build-system]
+# requires = ["setuptools >= 40.6.0", "wheel"]
+requires = ["hatchling", "wheel"]
+
+# build-backend = "setuptools.build_meta"
+build-backend = "hatchling.build"
+
+[project]
+name="testmsg"
+dynamic = [ "version" ]
+
+# how version managed by hatch
+# version="0.1.17"
+
+dependencies = [
+    'dkimpy',
+]
+authors = [
+  { name="Yaroslav Polyakov", email="yaroslaff@gmail.com" },
+]
+description = "Simple CLI tool to generate/send valid RFC822 email messages (with DKIM optionally)"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/yaroslaff/testmsg"
+Issues = "https://github.com/yaroslaff/testmsg/issues"
+
+
+[project.scripts]
+testmsg = "testmsg:main"
+
+[tool.hatch.version]
+path = 'testmsg/__main__.py'

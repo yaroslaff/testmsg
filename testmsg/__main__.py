@@ -4,6 +4,7 @@ import argparse
 import datetime
 import sys
 import mimetypes
+import dkim
 from email.message import EmailMessage
 import email.utils
 
@@ -15,7 +16,7 @@ lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, " \
     "Excepteur sint occaecat cupidatat non proident, " \
     "sunt in culpa qui officia deserunt mollit anim id est laborum.\n"
 
-version='0.0.7'
+__version__='0.0.8'
 
 
 def attach(msg: EmailMessage, path: str):
@@ -45,6 +46,11 @@ def get_args():
     g.add_argument('--time', default=False, action='store_true', help='add timestamp to text')
 
     g.add_argument('--attach', nargs='+', metavar='FILE', help='add attachment')
+
+    g = parser.add_argument_group('DKIM signature (optional)')
+    g.add_argument('--selector', help='DKIM selector, e.g. "mail"')
+    g.add_argument('--privkey', help='Path to private key')
+
 
     g = parser.add_argument_group('Sending (optional)')
     g.add_argument('--send', metavar='HOST')
@@ -89,10 +95,33 @@ def main():
     # me == the sender's email address
     # you == the recipient's email address
     msg['Subject'] = args.subject
-    msg['From'] = args._from or None
-    msg['To'] = args.to
+    msg['From'] = f'"{args._from}" <{args._from}>'
+    msg['To'] = f'"{args.to}" <{args.to}>'
     msg['Date'] = email.utils.formatdate(localtime=True)
     msg['Message-Id'] = email.utils.make_msgid()
+
+    if args.selector:
+        domainname = args._from.split('@')[1]
+        with open(args.privkey) as fh:
+            dkim_private_key = fh.read()
+        headers = [b"To", b"From", b"Subject"]
+        sig = dkim.sign(
+            message=msg.as_bytes(),
+            selector=str(args.selector).encode(),
+            domain=domainname.encode(),
+            privkey=dkim_private_key.encode(),
+            include_headers=headers,
+            linesep=b''
+        )
+        # add the dkim signature to the email message headers.
+        # decode the signature back to string_type because later on
+        # the call to msg.as_string() performs it's own bytes encoding...
+        
+        # un-wrap sig
+        # sig = sig.decode()
+
+        msg["DKIM-Signature"] = sig.decode()[len("DKIM-Signature: ") :]
+
 
     # Send the message via our own SMTP server.
     if args.send:
