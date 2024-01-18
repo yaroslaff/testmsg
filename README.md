@@ -57,7 +57,7 @@ Use `--attachment` (or `--att`) to add attachments: `--att FILE1 FILE2 ...`
 ### Sign with DKIM
 
 Generate DKIM RSA keys:
-~~~
+~~~shell
 # generate private RSA key for DKIM
 openssl genrsa -out example.com.pem 1024
 # generate public key for DKIM
@@ -65,12 +65,12 @@ openssl rsa -in example.com.pem -out example.com.pub -pubout
 ~~~
 
 Make DKIM DNS record with as `SELECTOR`._domainkey.example.com and verify it (here I decide to use selector `mail`):
-~~~
+~~~shell
 $ host -t txt mail._domainkey.example.com
 mail._domainkey.example.com.net descriptive text "v=DKIM1; h=sha256; k=rsa; s=email; p=MII...."
 ~~~
 
 send DKIM signed message to gmail or mail-tester.com! Use `--selector` and `--privkey` arguments.
-~~~
+~~~shell
 testmsg -f test@example.com -t mailbox@gmail.com --lorem --selector mail --privkey example.com.pem -v --send localhost
 ~~~
