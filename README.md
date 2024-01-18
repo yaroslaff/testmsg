@@ -7,10 +7,15 @@ While it's easy to send test messages like `echo asdf | mail you@gmail.com` or v
 - Easy to use and repeat test
 - Ability to customize messages
 - Work well with msmtp or other full-featured SMTP client (e.g. which can send over secure SMTP connection with authentication)
+- Support DKIM signatures
 
 ## Installation
 ~~~
 pip3 install testmsg
+~~~
+or
+~~~
+pipx install testmsg
 ~~~
 
 ## Usage examples
@@ -49,4 +54,23 @@ Default message text is empty, use `--text "blah blah blah"` or `--lorem` or `--
 ### Add attachments
 Use `--attachment` (or `--att`) to add attachments: `--att FILE1 FILE2 ...`
 
+### Sign with DKIM
 
+Generate DKIM RSA keys:
+~~~
+# generate private RSA key for DKIM
+openssl genrsa -out example.com.pem 1024
+# generate public key for DKIM
+openssl rsa -in example.com.pem -out example.com.pub -pubout
+~~~
+
+Make DKIM DNS record with as `SELECTOR`._domainkey.example.com and verify it (here I decide to use selector `mail`):
+~~~
+$ host -t txt mail._domainkey.example.com
+mail._domainkey.example.com.net descriptive text "v=DKIM1; h=sha256; k=rsa; s=email; p=MII...."
+~~~
+
+send DKIM signed message to gmail or mail-tester.com! Use `--selector` and `--privkey` arguments.
+~~~
+testmsg -f test@example.com -t mailbox@gmail.com --lorem --selector mail --privkey example.com.pem -v --send localhost
+~~~
