@@ -77,7 +77,7 @@ testmsg -f test@example.com -t mailbox@gmail.com --lorem --selector mail --privk
 
 ## Use together with msmtp
 
-Here we send with TLS and authentication (using [msmtp](https://github.com/marlam/msmtp)). User for authentication (`--user`) is same as FROM address. Testmsg generates valid message and msmtp 
+Here we send with TLS and authentication (using [msmtp](https://github.com/marlam/msmtp)). Username for authentication (`--user`) is same as FROM address. Testmsg generates valid message and msmtp sends it.
 
 ~~~
 FROM=sender@example.com
