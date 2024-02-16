@@ -74,3 +74,14 @@ send DKIM signed message to gmail or mail-tester.com! Use `--selector` and `--pr
 ~~~shell
 testmsg -f test@example.com -t mailbox@gmail.com --lorem --selector mail --privkey example.com.pem -v --send localhost
 ~~~
+
+## Use together with msmtp
+
+Here we send with TLS and authentication (using [msmtp](https://github.com/marlam/msmtp)). User for authentication (`--user`) is same as FROM address. Testmsg generates valid message and msmtp 
+
+~~~
+FROM=sender@example.com
+TO=recipient@gmail.com
+
+testmsg -f $FROM -t $TO --lorem | msmtp -v --host smtp.office365.com --port 587 --user $FROM --passwordeval='echo MyTestPass' -f $FROM --tls=on --auth=on $TO
+~~~
