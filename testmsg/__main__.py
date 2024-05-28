@@ -16,7 +16,7 @@ lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, " \
     "Excepteur sint occaecat cupidatat non proident, " \
     "sunt in culpa qui officia deserunt mollit anim id est laborum.\n"
 
-__version__='0.0.9'
+__version__='0.0.10'
 
 
 def attach(msg: EmailMessage, path: str):
@@ -54,6 +54,10 @@ def get_args():
 
     g = parser.add_argument_group('Sending (optional)')
     g.add_argument('--send', metavar='HOST')
+    g.add_argument('--ssl', default=False, action='store_true', help='Use SSL, port 465')
+    g.add_argument('--starttls', default=False, action='store_true', help='Use STARTTLS command')
+    g.add_argument('--user', metavar='USERNAME')
+    g.add_argument('--password', metavar='PASSWORD')
     g.add_argument('-v', '--verbose', default=False, action='store_true', help='Verbose SMTP')
 
 
@@ -64,6 +68,9 @@ def main():
     args = get_args()
 
     text = ''
+
+    if args.password and not args.user:
+        args.user = args._from
 
     # generate text
     if args.text:
@@ -125,9 +132,19 @@ def main():
 
     # Send the message via our own SMTP server.
     if args.send:
-        smtp = smtplib.SMTP(args.send)
+        if args.ssl:
+            smtp = smtplib.SMTP_SSL(args.send)
+        else:
+            smtp = smtplib.SMTP(args.send)
         if args.verbose:
             smtp.set_debuglevel(True)
+        
+        if args.starttls:
+            smtp.starttls()
+
+        if args.user:
+            smtp.login(args.user, args.password)
+        
         try:
             r = smtp.send_message(msg)
         except smtplib.SMTPResponseException as e:

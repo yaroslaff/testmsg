@@ -75,6 +75,18 @@ send DKIM signed message to gmail or mail-tester.com! Use `--selector` and `--pr
 testmsg -f test@example.com -t mailbox@gmail.com --lorem --selector mail --privkey example.com.pem -v --send localhost
 ~~~
 
+## Use with authentication and SSL/STARTTLS SMTP servers
+
+To use authentication, use `--user` and `--password` (or `--pass`) parameters. Use `--ssl` to use SSL-capable SMTP server (port 465), or use `--starttls` to use `STARTTLS` SMTP command. If neither `--ssl` nor `--starttls` is given, message and authentication credentials are sent over plain unencrypted connection, which is highly insecure.
+
+If `--user` is not given (but `--password` given), testmsg will use username same as from (`--from` / `-f`) address. 
+
+Example:
+
+~~~
+testmsg -v -f test1@example.com -t somebody@example.net --lorem --pass "MyTestPass" --send mx.example.com --starttls
+~~~
+
 ## Use together with msmtp
 
 Here we send with TLS and authentication (using [msmtp](https://github.com/marlam/msmtp)). Username for authentication (`--user`) is same as FROM address. Testmsg generates valid message and msmtp sends it.
