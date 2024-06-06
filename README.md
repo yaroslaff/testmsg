@@ -18,7 +18,9 @@ or
 pipx install testmsg
 ~~~
 
-## Usage examples
+## Usage example
+Just generate minimal valid message, print to stdout (not sending). 
+
 ~~~
 $ testmsg --to you@gmail.com  --lorem 
 Content-Type: text/plain; charset="utf-8"
@@ -41,10 +43,12 @@ erunt mollit anim id est laborum.
 ## Options
 
 ### Sending  message
-To actually send message via SMTP server add `--send localhost` or (if you need really powerful SMTP client features) pipe to msmtp:
+To actually send message via SMTP server add `--send localhost` and optionally add `-v` for verbosity.
 ~~~
-testmsg --lorem --to you@gmail.com --from you@example.net | msmtp --host mail.example.net -v --tls=on --tls-starttls=on --auth=on --user=you@example.com --passwordeval "echo YourPass" -f you@example.net you@gmail.com
+testmsg -v --lorem --from you@example.net --to you@gmail.com --send localhost
 ~~~ 
+
+See below about how to use authentication and  SSL/TLS and how to use with `msmtp` (or other smtp clients).
 
 ### Customize message
 Use `--from`, `--to` and `--subject` to override basic properties of message, use `--add HEADER VALUE` to add custom header(s).
