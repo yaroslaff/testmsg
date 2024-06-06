@@ -3,7 +3,7 @@ Generate RFC822 compliant e-mail messages for tests and send it over SMTP.
 
 While it's easy to send test messages like `echo asdf | mail you@gmail.com` or via `telnet mx.example.com 25` I need a tool which:
 - Generates valid messages
-- Messages does not looks spammy or very suspicious
+- Messages should not look spammy or very suspicious
 - Easy to use and repeat test
 - Ability to customize messages
 - Work well with msmtp or other full-featured SMTP client (e.g. which can send over secure SMTP connection with authentication)
