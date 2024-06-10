@@ -42,7 +42,7 @@ erunt mollit anim id est laborum.
 
 ## Options
 
-You can pass options either as command-line arguments or in .env file. Example:
+You can pass options either as command-line arguments or in `.env` file. Example:
 ~~~
 FROM=noreply@example.com
 TO=me@example.net
@@ -50,7 +50,7 @@ SUBJECT=My subj
 
 # Only one of next three is possible at same time
 # TEXT="Hello, world!"
-# MSG=/tmp/messagetext.txt
+# MSG=/tmp/helloworld.txt
 LOREM=1
 
 # add timestamp to message body
