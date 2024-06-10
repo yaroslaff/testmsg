@@ -56,10 +56,10 @@ LOREM=1
 # add timestamp to message body
 TIMESTAMP=1
 
-# if we want to send message, set mailserver host there
+# if we want to send message, set mailserver host there. Otherwise testmsg will just print to stdout
 SEND=localhost
 
-# authentication
+# SMTP authentication
 # If SMTPPASS given, will use SMTP authentication. Default SMTPUSER is same as FROM
 # SMTPUSER=aaa@bbb.com
 SMTPPASS="MySecretPassword"
