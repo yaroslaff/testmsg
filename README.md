@@ -3,7 +3,7 @@ Generate RFC822 compliant e-mail messages for tests and send it over SMTP.
 
 While it's easy to send test messages like `echo asdf | mail you@gmail.com` or via `telnet mx.example.com 25` I need a tool which:
 - Generates valid messages
-- Messages does not looks spammy or very suspicious
+- Messages should not look spammy or very suspicious
 - Easy to use and repeat test
 - Ability to customize messages
 - Work well with msmtp or other full-featured SMTP client (e.g. which can send over secure SMTP connection with authentication)
@@ -18,7 +18,9 @@ or
 pipx install testmsg
 ~~~
 
-## Usage examples
+## Usage example
+Just generate minimal valid message, print to stdout (not sending). 
+
 ~~~
 $ testmsg --to you@gmail.com  --lorem 
 Content-Type: text/plain; charset="utf-8"
@@ -73,10 +75,12 @@ To enable boolean option use value "1", to disable - any other value.
 With such .env file, you can send message with just `testmsg` command (no options).
 
 ### Sending  message
-To actually send message via SMTP server add `--send localhost` or (if you need really powerful SMTP client features) pipe to msmtp:
+To actually send message via SMTP server add `--send localhost` and optionally add `-v` for verbosity.
 ~~~
-testmsg --lorem --to you@gmail.com --from you@example.net | msmtp --host mail.example.net -v --tls=on --tls-starttls=on --auth=on --user=you@example.com --passwordeval "echo YourPass" -f you@example.net you@gmail.com
+testmsg -v --lorem --from you@example.net --to you@gmail.com --send localhost
 ~~~ 
+
+See below about how to use authentication and  SSL/TLS and how to use with `msmtp` (or other smtp clients).
 
 ### Customize message
 Use `--from`, `--to` and `--subject` to override basic properties of message, use `--add HEADER VALUE` to add custom header(s).
