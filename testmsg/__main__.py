@@ -7,6 +7,9 @@ import mimetypes
 import dkim
 from email.message import EmailMessage
 import email.utils
+from dotenv import load_dotenv
+import os
+
 
 lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, " \
     "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n" \
@@ -16,7 +19,7 @@ lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, " \
     "Excepteur sint occaecat cupidatat non proident, " \
     "sunt in culpa qui officia deserunt mollit anim id est laborum.\n"
 
-__version__='0.0.10'
+__version__='0.0.11'
 
 
 def attach(msg: EmailMessage, path: str):
@@ -32,33 +35,56 @@ def attach(msg: EmailMessage, path: str):
 
 
 def get_args():
+    
+    load_dotenv()
+
+    def_from = os.getenv('FROM', 'from@example.com')
+    def_to = os.getenv('TO', 'to@example.net')
+    def_subj = os.getenv('SUBJECT', 'Sent with github.com/yaroslaff/testmsg')
+
+    def_text = os.getenv('TEXT')
+    def_lorem = bool(os.getenv('LOREM', '0') == '1')
+    def_msg = os.getenv('MSG')
+    def_timestamp = os.getenv('TIMESTAMP', '0') == '1'
+
+    def_send = os.getenv('SEND')
+    def_ssl = os.getenv('SSL', '0') == '1'
+    def_starttls = os.getenv('STARTTLS', '0') == '1'
+    def_username = os.getenv('SMTPUSER')
+    def_password = os.getenv('SMTPPASS')
+    
+    def_verbose = os.getenv('VERBOSE', '0') == '1'
+
+    def_selector = os.getenv("DKIM_SELECTOR")
+    def_privkey = os.getenv("DKIM_PRIVKEY")
+
     parser = argparse.ArgumentParser(description=f'Generate/Send valid RFC822 email messages for testing {__version__}')
-    parser.add_argument('-f', '--from', dest='_from', default='from@example.com', metavar='EMAIL')
-    parser.add_argument('-t', '--to', default='to@example.net', metavar='EMAIL')
-    parser.add_argument('-s', '--subject', metavar='Subject', default='Sent with github.com/yaroslaff/testmsg')
+    parser.add_argument('-f', '--from', dest='_from', default=def_from, metavar='EMAIL')
+    parser.add_argument('-t', '--to', default=def_to, metavar='EMAIL')
+    parser.add_argument('-s', '--subject', metavar='Subject', default=def_subj)
     parser.add_argument('-a', '--add', nargs=2, action='append', dest='headers', metavar=('HEADER', 'VALUE'), help='add header')
 
 
     g = parser.add_argument_group('Message body')
-    g.add_argument('--text')
-    g.add_argument('--lorem', default=False, action='store_true', help='Use lorem ipsum...')
-    g.add_argument('--msg', metavar='FILE', help='read message body from file (or "-" to read from stdin)')
-    g.add_argument('--time', default=False, action='store_true', help='add timestamp to text')
+    g.add_argument('--text', default=def_text)
+    g.add_argument('--lorem', default=def_lorem, action='store_true', help='Use lorem ipsum...')
+    g.add_argument('--msg', metavar='FILE', default=def_msg, help='read message body from file (or "-" to read from stdin)')
+    g.add_argument('--time', default=def_timestamp, action='store_true', help='add timestamp to text')
 
     g.add_argument('--attach', nargs='+', metavar='FILE', help='add attachment')
 
     g = parser.add_argument_group('DKIM signature (optional)')
-    g.add_argument('--selector', help='DKIM selector, e.g. "mail"')
-    g.add_argument('--privkey', help='Path to private key')
+    g.add_argument('--selector', default=def_selector, help='DKIM selector, e.g. "mail"')
+    g.add_argument('--privkey', default=def_privkey, help='Path to private key')
 
 
     g = parser.add_argument_group('Sending (optional)')
-    g.add_argument('--send', metavar='HOST')
-    g.add_argument('--ssl', default=False, action='store_true', help='Use SSL, port 465')
-    g.add_argument('--starttls', default=False, action='store_true', help='Use STARTTLS command')
-    g.add_argument('--user', metavar='USERNAME')
-    g.add_argument('--password', metavar='PASSWORD')
-    g.add_argument('-v', '--verbose', default=False, action='store_true', help='Verbose SMTP')
+    g.add_argument('--send', default=def_send, metavar='HOST')
+    g.add_argument('--ssl', default=def_ssl, action='store_true', help='Use SSL (will use port 465)')
+    g.add_argument('--starttls', default=def_starttls, action='store_true', help='Use STARTTLS command')
+    g.add_argument('--user', default=def_username, metavar='USERNAME')
+    g.add_argument('--password', default=def_password, metavar='PASSWORD')
+    g.add_argument('-v', '--verbose', default=def_verbose, action='store_true', help='Verbose SMTP')
 
 
     return parser.parse_args()

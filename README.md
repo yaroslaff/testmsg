@@ -40,6 +40,38 @@ erunt mollit anim id est laborum.
 
 ## Options
 
+You can pass options either as command-line arguments or in .env file. Example:
+~~~
+FROM=noreply@example.com
+TO=me@example.net
+SUBJECT=My subj
+
+# Only one of next three is possible at same time
+# TEXT="Hello, world!"
+# MSG=/tmp/messagetext.txt
+LOREM=1
+
+# add timestamp to message body
+TIMESTAMP=1
+
+# if we want to send message, set mailserver host there
+SEND=localhost
+
+# authentication
+# If SMTPPASS given, will use SMTP authentication. Default SMTPUSER is same as FROM
+# SMTPUSER=aaa@bbb.com
+SMTPPASS="MySecretPassword"
+
+# DKIM (very very optional)
+# DKIM_SELECTOR="mail"
+# DKIM_PRIVKEY=/etc/ssl/private/test.example.com.pem
+
+VERBOSE=1
+~~~
+To enable boolean option use value "1", to disable - any other value.
+
+With such .env file, you can send message with just `testmsg` command (no options).
+
 ### Sending  message
 To actually send message via SMTP server add `--send localhost` or (if you need really powerful SMTP client features) pipe to msmtp:
 ~~~
