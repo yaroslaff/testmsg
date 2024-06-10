@@ -19,7 +19,7 @@ lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, " \
     "Excepteur sint occaecat cupidatat non proident, " \
     "sunt in culpa qui officia deserunt mollit anim id est laborum.\n"
 
-__version__='0.0.11'
+__version__='0.0.12'
 
 
 def attach(msg: EmailMessage, path: str):
