@@ -46,7 +46,7 @@ You can pass options either as command-line arguments or in `.env` file. Example
 ~~~
 FROM=noreply@example.com
 TO=me@example.net
-SUBJECT=My subj
+SUBJECT="My subj"
 
 # Only one of next three is possible at same time
 # TEXT="Hello, world!"
