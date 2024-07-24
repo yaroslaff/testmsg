@@ -59,6 +59,9 @@ TIMESTAMP=1
 # if we want to send message, set mailserver host there. Otherwise testmsg will just print to stdout
 SEND=localhost
 
+# You may override port (e.g. 587)
+# PORT=25
+
 # SMTP authentication
 # If SMTPPASS given, will use SMTP authentication. Default SMTPUSER is same as FROM
 # SMTPUSER=aaa@bbb.com

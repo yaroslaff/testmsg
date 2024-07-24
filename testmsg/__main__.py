@@ -19,7 +19,7 @@ lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, " \
     "Excepteur sint occaecat cupidatat non proident, " \
     "sunt in culpa qui officia deserunt mollit anim id est laborum.\n"
 
-__version__='0.0.12'
+__version__='0.0.13'
 
 
 def attach(msg: EmailMessage, path: str):
@@ -49,9 +49,11 @@ def get_args():
 
     def_send = os.getenv('SEND')
     def_ssl = os.getenv('SSL', '0') == '1'
+    def_port = os.getenv('PORT')
     def_starttls = os.getenv('STARTTLS', '0') == '1'
     def_username = os.getenv('SMTPUSER')
     def_password = os.getenv('SMTPPASS')
+    
     
     def_verbose = os.getenv('VERBOSE', '0') == '1'
 
@@ -80,7 +82,8 @@ def get_args():
 
     g = parser.add_argument_group('Sending (optional)')
     g.add_argument('--send', default=def_send, metavar='HOST')
-    g.add_argument('--ssl', default=def_ssl, action='store_true', help='Use SSL (will use port 465)')
+    g.add_argument('--ssl', default=def_ssl, action='store_true', help='Use SSL (will use default port 465)')
+    g.add_argument('--port', '-p', default=def_port, type=int, metavar='PORT')
     g.add_argument('--starttls', default=def_starttls, action='store_true', help='Use STARTTLS command')
     g.add_argument('--user', default=def_username, metavar='USERNAME')
     g.add_argument('--password', default=def_password, metavar='PASSWORD')
@@ -159,9 +162,9 @@ def main():
     # Send the message via our own SMTP server.
     if args.send:
         if args.ssl:
-            smtp = smtplib.SMTP_SSL(args.send)
+            smtp = smtplib.SMTP_SSL(args.send, port=args.port)
         else:
-            smtp = smtplib.SMTP(args.send)
+            smtp = smtplib.SMTP(args.send, port=args.port)
         if args.verbose:
             smtp.set_debuglevel(True)
         
