@@ -67,6 +67,10 @@ SEND=localhost
 # SMTPUSER=aaa@bbb.com
 SMTPPASS="MySecretPassword"
 
+# use 1 for True, anything else for False
+SSL=0
+STARTTLS=1
+
 # DKIM (very very optional)
 # DKIM_SELECTOR="mail"
 # DKIM_PRIVKEY=/etc/ssl/private/test.example.com.pem
@@ -87,6 +91,8 @@ See below about how to use authentication and  SSL/TLS and how to use with `msmt
 
 ### Customize message
 Use `--from`, `--to` and `--subject` to override basic properties of message, use `--add HEADER VALUE` to add custom header(s).
+
+To set `Return-Path` header (address used in `MAIL FROM` SMTP command) to custom value, use `-r` / `--return`, e.g. `--return noreply@gmail.com`.
 
 Default message text is empty, use `--text "blah blah blah"` or `--lorem` or `--msg PATH` or `--msg -` .(to read from stdin). Add `--time` to add current time as an prefix to text.
 

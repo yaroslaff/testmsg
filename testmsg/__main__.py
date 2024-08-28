@@ -19,7 +19,7 @@ lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, " \
     "Excepteur sint occaecat cupidatat non proident, " \
     "sunt in culpa qui officia deserunt mollit anim id est laborum.\n"
 
-__version__='0.0.13'
+__version__='0.0.14'
 
 
 def attach(msg: EmailMessage, path: str):
@@ -87,6 +87,7 @@ def get_args():
     g.add_argument('--starttls', default=def_starttls, action='store_true', help='Use STARTTLS command')
     g.add_argument('--user', default=def_username, metavar='USERNAME')
     g.add_argument('--password', default=def_password, metavar='PASSWORD')
+    g.add_argument('-r','--return', default=None, dest='_return', metavar='RETURN-PATH', help='Return-Path address (used in MAIL FROM). Default is same as --from')
     g.add_argument('-v', '--verbose', default=def_verbose, action='store_true', help='Verbose SMTP')
 
 
@@ -127,6 +128,8 @@ def main():
     if args.attach:
         for att_file in args.attach:
             attach(msg, att_file)
+
+    return_path = args._return or args._from
 
     # me == the sender's email address
     # you == the recipient's email address
@@ -175,7 +178,7 @@ def main():
             smtp.login(args.user, args.password)
         
         try:
-            r = smtp.send_message(msg)
+            r = smtp.send_message(msg, from_addr=return_path)
         except smtplib.SMTPResponseException as e:
             print(e.smtp_code, e.smtp_error.decode(), file=sys.stderr)
         except smtplib.SMTPException as e:
