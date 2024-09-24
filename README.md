@@ -10,13 +10,20 @@ While it's easy to send test messages like `echo asdf | mail you@gmail.com` or v
 - Support DKIM signatures
 
 ## Installation
-~~~
-pip3 install testmsg
-~~~
-or
+For current user, using [pipx](https://github.com/pypa/pipx)
 ~~~
 pipx install testmsg
 ~~~
+or globally:
+~~~
+PIPX_HOME=/opt/pipx PIPX_BIN_DIR=/usr/local/bin install pipx testmsg
+~~~
+
+or (old way, better if inside virtualenv):
+~~~
+pip3 install testmsg
+~~~
+
 
 ## Usage example
 Just generate minimal valid message, print to stdout (not sending). 
