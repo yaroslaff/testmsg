@@ -16,7 +16,7 @@ pipx install testmsg
 ~~~
 or globally:
 ~~~
-PIPX_HOME=/opt/pipx PIPX_BIN_DIR=/usr/local/bin install pipx testmsg
+PIPX_HOME=/opt/pipx PIPX_BIN_DIR=/usr/local/bin pipx install testmsg
 ~~~
 
 or (old way, better if inside virtualenv):
