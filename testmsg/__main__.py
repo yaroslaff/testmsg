@@ -7,9 +7,8 @@ import mimetypes
 import dkim
 from email.message import EmailMessage
 import email.utils
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 import os
-
 
 lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, " \
     "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n" \
@@ -19,7 +18,7 @@ lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, " \
     "Excepteur sint occaecat cupidatat non proident, " \
     "sunt in culpa qui officia deserunt mollit anim id est laborum.\n"
 
-__version__='0.0.15'
+__version__='0.0.16'
 
 verbose = False
 
@@ -40,11 +39,8 @@ def vprint(*args, **kwargs):
         print(*args, **kwargs)
 
 
-def get_args():
+def get_args(first_run=True):
     
-    if load_dotenv():
-        vprint("loaded .env file")
-
     def_from = os.getenv('FROM', 'from@example.com')
     def_to = os.getenv('TO', 'to@example.net')
     def_subj = os.getenv('SUBJECT', 'Sent with github.com/yaroslaff/testmsg')
@@ -72,7 +68,7 @@ def get_args():
     parser.add_argument('-t', '--to', default=def_to, metavar='EMAIL')
     parser.add_argument('-s', '--subject', metavar='Subject', default=def_subj)
     parser.add_argument('-a', '--add', nargs=2, action='append', dest='headers', metavar=('HEADER', 'VALUE'), help='add header')
-
+    parser.add_argument('-c', '--config', metavar='.env', help='load this .env file as config')
 
     g = parser.add_argument_group('Message body')
     g.add_argument('--text', default=def_text)
@@ -98,7 +94,21 @@ def get_args():
     g.add_argument('-v', '--verbose', default=def_verbose, action='store_true', help='Verbose SMTP')
 
 
-    return parser.parse_args()
+    args = parser.parse_args()
+    if first_run:
+        if args.config:
+            # config given explicitly
+            if load_dotenv(dotenv_path=args.config) and args.verbose:
+                    print(f"loaded .env file from {args.config}")
+        else:            
+            dotenv_path = find_dotenv(usecwd=True)
+            if dotenv_path:
+                if load_dotenv(dotenv_path=dotenv_path) and args.verbose:
+                    print(f'loaded .env config from {dotenv_path}')
+        # run it 2nd time
+        args = get_args(first_run=False)
+
+    return args
 
 def main():
     global verbose
@@ -107,9 +117,6 @@ def main():
 
     if args.verbose:
         verbose = True
-        print("verbose mode")
-
-    vprint(args)
 
     text = ''
 
