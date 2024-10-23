@@ -19,8 +19,9 @@ lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, " \
     "Excepteur sint occaecat cupidatat non proident, " \
     "sunt in culpa qui officia deserunt mollit anim id est laborum.\n"
 
-__version__='0.0.14'
+__version__='0.0.15'
 
+verbose = False
 
 def attach(msg: EmailMessage, path: str):
 
@@ -34,9 +35,15 @@ def attach(msg: EmailMessage, path: str):
                             filename=path)
 
 
+def vprint(*args, **kwargs):
+    if verbose:
+        print(*args, **kwargs)
+
+
 def get_args():
     
-    load_dotenv()
+    if load_dotenv():
+        vprint("loaded .env file")
 
     def_from = os.getenv('FROM', 'from@example.com')
     def_to = os.getenv('TO', 'to@example.net')
@@ -94,8 +101,15 @@ def get_args():
     return parser.parse_args()
 
 def main():
+    global verbose
 
     args = get_args()
+
+    if args.verbose:
+        verbose = True
+        print("verbose mode")
+
+    vprint(args)
 
     text = ''
 
