@@ -18,7 +18,7 @@ lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, " \
     "Excepteur sint occaecat cupidatat non proident, " \
     "sunt in culpa qui officia deserunt mollit anim id est laborum.\n"
 
-__version__='0.0.16'
+__version__='0.0.17'
 
 verbose = False
 
@@ -56,7 +56,7 @@ def get_args(first_run=True):
     def_starttls = os.getenv('STARTTLS', '0') == '1'
     def_username = os.getenv('SMTPUSER')
     def_password = os.getenv('SMTPPASS')
-    
+    def_helo = os.getenv('HELO', 'localhost')
     
     def_verbose = os.getenv('VERBOSE', '0') == '1'
 
@@ -89,6 +89,7 @@ def get_args(first_run=True):
     g.add_argument('--port', '-p', default=def_port, type=int, metavar='PORT')
     g.add_argument('--starttls', default=def_starttls, action='store_true', help='Use STARTTLS command')
     g.add_argument('--user', default=def_username, metavar='USERNAME')
+    g.add_argument('--helo', default=def_helo, help='local hostname for HELO/EHLO')
     g.add_argument('--password', default=def_password, metavar='PASSWORD')
     g.add_argument('-r','--return', default=None, dest='_return', metavar='RETURN-PATH', help='Return-Path address (used in MAIL FROM). Default is same as --from')
     g.add_argument('-v', '--verbose', default=def_verbose, action='store_true', help='Verbose SMTP')
@@ -186,9 +187,9 @@ def main():
     # Send the message via our own SMTP server.
     if args.send:
         if args.ssl:
-            smtp = smtplib.SMTP_SSL(args.send, port=args.port)
+            smtp = smtplib.SMTP_SSL(host=args.send, port=args.port)
         else:
-            smtp = smtplib.SMTP(args.send, port=args.port)
+            smtp = smtplib.SMTP(host=args.send, port=args.port)
         if args.verbose:
             smtp.set_debuglevel(True)
         
