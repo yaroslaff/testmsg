@@ -18,7 +18,7 @@ lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, " \
     "Excepteur sint occaecat cupidatat non proident, " \
     "sunt in culpa qui officia deserunt mollit anim id est laborum.\n"
 
-__version__='0.0.17'
+__version__='0.0.18'
 
 verbose = False
 
@@ -193,13 +193,16 @@ def main():
         if args.verbose:
             smtp.set_debuglevel(True)
         
-        if args.starttls:
-            smtp.starttls()
 
-        if args.user:
-            smtp.login(args.user, args.password)
         
         try:
+
+            if args.starttls:
+                smtp.starttls()
+
+            if args.user:
+                smtp.login(args.user, args.password)
+
             r = smtp.send_message(msg, from_addr=return_path)
         except smtplib.SMTPResponseException as e:
             print(e.smtp_code, e.smtp_error.decode(), file=sys.stderr)
