@@ -18,7 +18,7 @@ lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, " \
     "Excepteur sint occaecat cupidatat non proident, " \
     "sunt in culpa qui officia deserunt mollit anim id est laborum.\n"
 
-__version__='0.0.18'
+__version__='0.0.19'
 
 verbose = False
 
@@ -187,9 +187,9 @@ def main():
     # Send the message via our own SMTP server.
     if args.send:
         if args.ssl:
-            smtp = smtplib.SMTP_SSL(host=args.send, port=args.port)
+            smtp = smtplib.SMTP_SSL(host=args.send, port=args.port, local_hostname=args.helo)
         else:
-            smtp = smtplib.SMTP(host=args.send, port=args.port)
+            smtp = smtplib.SMTP(host=args.send, port=args.port, local_hostname=args.helo)
         if args.verbose:
             smtp.set_debuglevel(True)
         
